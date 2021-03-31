@@ -1,9 +1,12 @@
 package com.aplikasi.test;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
+import okhttp3.internal.Util;
 
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.view.View;
@@ -21,11 +24,13 @@ import com.aplikasi.test.ViewModel.MainViewModel;
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     Button btnLogin, btnDaftar;
     Boolean backPress = true;
+    MainViewModel mainViewModel;
+    AlertDialog dialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        MainViewModel mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
+        mainViewModel = new ViewModelProvider(this).get(MainViewModel.class);
         mainViewModel.setToken(Utils.getKey(this, Utils.token));
         mainViewModel.setLogin(Utils.getKey(this, Utils.isLogin));
         setContentView(R.layout.activity_main);
@@ -54,11 +59,43 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
+    private void show(){
+        AlertDialog.Builder dialog1 = new AlertDialog.Builder(this);
+        dialog1.setCancelable(true);
+        dialog1.setTitle("Anda Ingin Log Out Atau Keluar ?");
+
+        dialog1.setCancelable(true);
+
+        dialog1.setPositiveButton("Keluar", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finish();
+            }
+        });
+
+        dialog1.setNegativeButton("Log Out", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Utils.setKey(getApplicationContext(), Utils.token,"");
+                Utils.setKey(getApplication(), Utils.isLogin, "false");
+                mainViewModel.setLogin("false");
+                mainViewModel.setToken("");
+                toFrag(new homeFragment());
+                dialog.dismiss();
+            }
+        });
+
+        dialog = dialog1.create();
+        dialog.show();
+    }
+
     @Override
     public void onBackPressed() {
         if (backPress){
             backPress = false;
-            toFrag(new homeFragment());
+            if (Utils.getKey(this, Utils.isLogin).equals("true")){
+                show();
+            }
         }else
             super.onBackPressed();
         

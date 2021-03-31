@@ -36,6 +36,13 @@ public interface ApiService {
     );
 
     @FormUrlEncoded
+    @POST("item/delete")
+    Call<Barang> delete(
+            @Header("Authorization") String authorization,
+            @FieldMap Map<String, Object> m
+    );
+
+    @FormUrlEncoded
     @POST("item/update")
     Call<Barang> updateBarang(
             @Header("Authorization") String authorization,

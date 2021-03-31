@@ -5,6 +5,8 @@ import com.google.gson.annotations.SerializedName;
 import java.util.List;
 
 public class Barang{
+    @SerializedName("success")
+    public Boolean success;
     @SerializedName("kode_barang")
     public String kode_barang;
     @SerializedName("nama_barang")
@@ -73,5 +75,13 @@ public class Barang{
 
     public List<Barang> getBarangList() {
         return barangList;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
+    }
+
+    public Boolean getSuccess() {
+        return success;
     }
 }

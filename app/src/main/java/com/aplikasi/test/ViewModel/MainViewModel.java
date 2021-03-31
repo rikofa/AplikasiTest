@@ -85,7 +85,6 @@ LiveData<List<Barang>> barangList;
     }
 
     public LiveData<Barang> search(String kode){
-
         mainRepository = new MainRepository();
         this.barang = mainRepository.search(token, kode);
 

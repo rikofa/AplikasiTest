@@ -16,6 +16,10 @@ import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout;
+import io.reactivex.rxjava3.core.Observable;
+import io.reactivex.rxjava3.functions.Consumer;
+import io.reactivex.rxjava3.functions.Predicate;
+import io.reactivex.rxjava3.schedulers.Schedulers;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -155,25 +159,25 @@ public class homeFragment extends Fragment implements View.OnClickListener, Adap
             @Override
             public void afterTextChanged(Editable s) {
                 if (s.toString().length() != 0) {
+                    String kodeBarang = "empty";
                     llProgressBar.setVisibility(View.VISIBLE);
-                    barangList.clear();
-                    mainViewModel.search(s.toString()).observe(requireActivity(), barang1 -> {
-                        barang = new Barang();
-                        if (barang1 != null) {
-                            barang.setStatus_barang(barang1.getStatus_barang());
-                            barang.setSatuan_barang(barang1.getSatuan_barang());
-                            barang.setNama_barang(barang1.getNama_barang());
-                            barang.setKode_barang(barang1.getKode_barang());
-                            barang.setJumlah_barang(barang1.getJumlah_barang());
-                            barang.setHarga_barang(barang1.getHarga_barang());
+                    showSearch(s.toString());
 
-                            barangList.add(barang);
+//                    Observable.just(barangList).filter(barangs -> )
 
-                            adapterBarang.notifyDataSetChanged();
-                            llProgressBar.setVisibility(View.GONE);
-                        }
+//                        for (int i = 0; i < barangList.size(); i++){
+//                            if(barangList.get(i).getNama_barang().matches(s.toString())) {
+//                                kodeBarang = barangList.get(i).getKode_barang();
+//                                Log.d("tst", barangList.get(i).getNama_barang());
+//                                showSearch(kodeBarang);
+//                                break;
+//                            }else{
+//                                barangList.clear();
+//                                adapterBarang.notifyDataSetChanged();
+//                                llProgressBar.setVisibility(View.GONE);
+//                            }
+//                        }
 
-                    });
                 }else{
                     showList();
                 }
@@ -181,6 +185,39 @@ public class homeFragment extends Fragment implements View.OnClickListener, Adap
         });
 
         return v;
+    }
+
+    private void showSearch(String kode){
+        Log.d("tst", kode);
+        barangList.clear();
+        mainViewModel.search(kode) .observe(requireActivity(), barang1 -> {
+            barang = new Barang();
+            if (barang1 != null) {
+//                            if (barang1.getSuccess()){
+                Log.d("test", ""+barang1.getStatus_barang());
+                Log.d("test", ""+barang1.getSatuan_barang());
+                Log.d("test", ""+barang1.getNama_barang());
+                Log.d("test", ""+barang1.getKode_barang());
+                Log.d("test", ""+barang1.getJumlah_barang());
+                Log.d("test", ""+barang1.getHarga_barang());
+
+                if (barang1.getSatuan_barang() != null){
+                    barang.setStatus_barang(barang1.getStatus_barang());
+                    barang.setSatuan_barang(barang1.getSatuan_barang());
+                    barang.setNama_barang(barang1.getNama_barang());
+                    barang.setKode_barang(barang1.getKode_barang());
+                    barang.setJumlah_barang(barang1.getJumlah_barang());
+                    barang.setHarga_barang(barang1.getHarga_barang());
+                    barangList.add(barang);
+                }
+
+                adapterBarang.notifyDataSetChanged();
+
+//                            }
+                llProgressBar.setVisibility(View.GONE);
+            }
+
+        });
     }
 
     public void initUI(View v){
@@ -359,4 +396,6 @@ public class homeFragment extends Fragment implements View.OnClickListener, Adap
         dialog = dialog1.create();
         dialog.show();
     }
+
+
 }

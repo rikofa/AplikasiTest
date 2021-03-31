@@ -160,7 +160,7 @@ public class MainRepository {
         m.put("kode_barang", kode);
 
         ApiService apiService = ApiSetting.getClient().create(ApiService.class);
-        Call<Barang> call = apiService.addBarang("Bearer " + token, m);
+        Call<Barang> call = apiService.delete("Bearer " + token, m);
         call.enqueue(new Callback<Barang>() {
             @Override
             public void onResponse(Call<Barang> call, Response<Barang> response) {
